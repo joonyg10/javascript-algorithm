@@ -15,7 +15,7 @@ function solution(begin: string, target: string, words: string[]): number {
 
   // 2개의 단어를 받아 1글자만 차이나는 지를 반환하는 함수
   function cmpTwoWord(word: string, anotherWord: string): boolean {
-    const set = new Set([...word.split(""), ...anotherWord.split("")]);
+    const set = new Set(word + anotherWord);
     return set.size === N + 1;
   }
 
