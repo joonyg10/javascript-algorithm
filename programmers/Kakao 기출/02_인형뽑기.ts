@@ -6,27 +6,27 @@ function solution_Crane(board: number[][], moves: number[]) {
   let bombedCnt = 0;
 
   const pickedStack: number[] = [];
-  const colMap: Map<number, number[]> = new Map();
   const pointer: number[] = Array(N + 1).fill(0);
 
+  function updatePointer(col: number): number {
+    let row = 0;
+    while (row < N) {
+      if (board[row][col]) return row;
+      ++row;
+    }
+    return N;
+  }
+
   for (let col = 0; col < N; ++col) {
-    const filteredDoll = Array(N)
-      .fill(0)
-      .reduce((acc: number[], _, row) => {
-        if (board[row][col]) acc.push(board[row][col]);
-        return acc;
-      }, []);
-    colMap.set(col + 1, filteredDoll);
+    pointer[col + 1] = updatePointer(col);
   }
 
   function pickDoll(col: number): number | undefined {
-    const colPointer = pointer[col];
-    const selectedCol: number[] = colMap.get(col)!;
+    const row = pointer[col];
+    if (row >= N) return undefined;
 
-    // pointer가 이미 영역 넘은 경우 -> 뺼 꺼 없음
-    if (colPointer >= selectedCol.length) return undefined;
-    const pickedDoll = selectedCol[colPointer];
-    pointer[col] = colPointer + 1; // pointer 1개 증가 시킨다.
+    const pickedDoll = board[row][col];
+    pointer[col] = row + 1;
     return pickedDoll;
   }
 
