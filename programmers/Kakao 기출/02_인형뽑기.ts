@@ -1,11 +1,11 @@
-const EMPTY = -1;
+const EMPTY = 0;
 
 function solution_Crane(board: number[][], moves: number[]) {
   const N = board.length;
   let prevStackPointer = EMPTY;
   let bombedCnt = 0;
 
-  const pickedStack: number[] = [];
+  const pickedStack: number[] = [-1];
   const pointer: number[] = Array(N + 1).fill(0);
 
   function updatePointer(col: number): number {
@@ -31,12 +31,8 @@ function solution_Crane(board: number[][], moves: number[]) {
   }
 
   function updatePickStack(pickedDoll: number): void {
-    if (prevStackPointer === EMPTY) {
-      appendDoll(pickedDoll);
-      return;
-    }
     const prevDoll = pickedStack[prevStackPointer];
-    if (prevDoll === pickedDoll) explodeDoll();
+    if (prevStackPointer !== EMPTY && prevDoll === pickedDoll) explodeDoll();
     else appendDoll(pickedDoll);
   }
 
