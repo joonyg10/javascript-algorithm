@@ -5,13 +5,12 @@
 //    단, 앞에 것이 끝났을때, 같이 배포 가능
 
 // [조건] : X
-interface IProps {}
 
 function kakao_solution6(progresses: number[], speeds: number[]) {
   const N: number = speeds.length;
 
-  // 남은 일수 배열
-  const leftDays = Array(N)
+  // 각 기능별로 남은 일수를 배열로 만듭니다.
+  const leftDays: number[] = Array(N)
     .fill(0)
     .reduce((acc, _, idx) => {
       const leftDay = Math.ceil((100 - progresses[idx]) / speeds[idx]);
@@ -19,18 +18,17 @@ function kakao_solution6(progresses: number[], speeds: number[]) {
       return acc;
     }, []);
 
-  let fp = 0;
-  let bp = 0;
-  let deployCnt = 0;
+  // two pointer를 이용
+  let [fp, bp] = [0, 0];
   const answer: number[] = [];
-
   while (fp < N || bp < N) {
-    const wouldDeployOverlap = leftDays[fp] >= leftDays[++bp];
+    // 앞의 기능이 완성되었는지 여부를 담는 변수
+    const isDeployJammed = leftDays[fp] >= leftDays[++bp];
 
-    // 앞에것이 끝나야 같이 배포
-    if (wouldDeployOverlap) continue;
+    // 앞에 것이 끝나야 같이 배포 -> jammed면 다음 기능이 끝날때 까지 bp를 올린다.
+    if (isDeployJammed) continue;
 
-    // bp는 다음 배포 index를 가리키고 있음 -> 차이는 bp - fp
+    // 막혀 있던 기능보다 더 걸리는 것 발견 ->
     answer.push(bp - fp);
     fp = bp;
   }
@@ -38,5 +36,5 @@ function kakao_solution6(progresses: number[], speeds: number[]) {
 }
 
 // [testcase]
-console.log(kakao_solution6([93, 30, 55], [1, 30, 5]));
-console.log(kakao_solution6([95, 90, 99, 99, 80, 99], [1, 1, 1, 1, 1, 1]));
+console.log(kakao_solution6([93, 30, 55], [1, 30, 5])); // [2, 1]
+console.log(kakao_solution6([95, 90, 99, 99, 80, 99], [1, 1, 1, 1, 1, 1])); // [1,3,2]
