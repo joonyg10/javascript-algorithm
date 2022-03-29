@@ -14,6 +14,8 @@
 
 #### [N으로 표현](#n으로-표현)
 
+#### [가장 먼 노드](#가장-먼-노드)
+
 <br />
 <br />
 
@@ -167,6 +169,9 @@ _7. 다시 맨앞에서 부터 iterate하는데 아래의 규칙을 적용시킨
 
 _8. reverse시켜주고 join 메소드를 활용해 하나의 스트링을 반환해준다._
 
+<br />
+<br />
+
 # N으로 표현
 
 [문제]: N, number가 주어지는 경우 number를 N으로만 표기할 수 있을 때, 사용된 N의 갯수를 구하여라
@@ -186,3 +191,43 @@ _8. reverse시켜주고 join 메소드를 활용해 하나의 스트링을 반�
    - 8번 이상 시행하면 -1을 반환하면 되니 for문은 8만 반복한다.
    - dp[i]에 추가는 hash로 의한 O(1)이 되기 위해, Map 테이블로 추가토록 한다.
 3. 2.의 for문 <span style="color:lightgray">_(사칙연산이 완료)_</span>이 완료된 후, 현재 i에 대해 테이블에 number가 있다면 i를 반환하면 끝!
+
+<br />
+<br />
+
+# 가장 먼 노드
+
+<span style='color:skyblue'>**[문제]**</span> 1번 노드에서 가장 먼 노드의 갯수를 구하시오
+
+<span style='color:skyblue'>**[조건]**</span> N <= 20,000, 간선 갯수 <= 50,000
+
+<span style='color:skyblue'>**[설계]**</span>
+
+- BFS를 진행하며, visited[curr] = visited[prev] + 1를 시행
+- BFS종료하고, Visited에서 가장 큰 수 구하고, 갯수 구하는 filter돌리는 것은 비효율이라 판단
+- 현재 노드 까지의 최단거리를 키로 하는 Map 객체를 생성!
+- value로는 해당 최단 거리를 가지는 노드의 갯수를 저장한다.
+
+- BFS를 위한 Queue가 필요. 단, shift()의 경우 O(N)의 시간복잡도를 가지기에 배열에서 실제로 빼는 것 대신에 pointer 2개를 두어 맨 앞과 끝을 표시토록하는 클래스를 선언
+
+<span style='color:skyblue'>**[풀이]**</span>
+
+1. Queue 클래스 생성
+   - enqueue, dequeue, size, empty 4개의 method 선언
+2. 변수 선언
+
+   - graph: {현재 노드 : 인접한 노드들의 리스트}
+   - visited: BFS를 위한 리스트로 idx자체가 노드를 대변하며 그 값은 노드 1번에서의 최단거리가 저장된다.
+   - queue : Queue 객체
+   - answer: {최단거리: 해당 최단거리에 해당하는 노드 갯수}
+
+3) BFS를 시행
+   (1) 조건은 queue가 empty가 아닐때 까지
+   (2) 현재 노드 까지의 최단 거리를 edgeCnt변수에 저장한뒤
+   (3) answer에 최단 거리 갯수를 업데이트 한다.
+   (4) 현재 노드에 대해 인접 노드들의 리스트를 graph에서 얻어와 visited[adjNode] = visited[curr] + 1을 시행해준 뒤 queue에 enqueue
+
+   - 이 때, visited[adjNode], 즉, 앞서 방문한 적이 있는 노드의 경우 continue로 건너뛴다.
+
+4) answer는 Map객체 이므로 key: value쌍이 순서대로 들어간다. 즉, 가장 마지막으로 들어간 key값은 가장 멀리 떨어진 노드 까지의 거리가 되며 그 value가 해당 거리를 가지는 노드의 갯수이다.
+   - [...Map].pop()으로 마지막 [key, value] 쌍을 가져온 뒤 value를 반환
